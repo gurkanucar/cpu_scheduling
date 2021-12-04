@@ -1,20 +1,30 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { Col, Form, Button, Row, Table } from "react-bootstrap";
 
-const JobInputComponent = (props) => {
+const JobInput = (props) => {
   const [values, setValues] = React.useState({
-    jobID: props.job.jobID,
+    id: props.job.id,
+    jobName: props.job.jobName,
     arrivalTime: props.job.arrivalTime,
     burstTime: props.job.burstTime,
     priority: props.job.priority,
   });
 
-  const handleChange = (prop) => (event) => {
-    setValues({ ...values, [prop]: event.target.value });
-   // const tmp = values;
-    props.formTest({ ...values, [prop]: event.target.value });
+  const onClick = () => {
+    props.onClick(values.id);
   };
 
+  useEffect(() => {
+    console.log("update job input component", values);
+  }, [values]);
+
+  const handleChange = (event) => {
+    const { name, value } = event.currentTarget;
+    setValues((previousForm) => ({
+      ...previousForm,
+      [name]: value,
+    }));
+  };
 
   return (
     <tr>
@@ -24,8 +34,8 @@ const JobInputComponent = (props) => {
           fontSize: "1.3rem",
         }}
       >
-        <Button variant="danger" onClick={() => props.onClick()}>
-          {props?.job?.jobID}
+        <Button variant="danger" onClick={onClick}>
+          {props?.job?.jobName}
         </Button>
       </td>
       <td>
@@ -34,7 +44,8 @@ const JobInputComponent = (props) => {
             type="number"
             value={values.arrivalTime}
             defaultValue={props?.job?.arrivalTime ? props?.job?.arrivalTime : 0}
-            onChange={handleChange("arrivalTime")}
+            name="arrivalTime"
+            onChange={handleChange}
             placeholder="Arrival Time"
           />
         </Form.Group>
@@ -45,7 +56,8 @@ const JobInputComponent = (props) => {
             type="number"
             value={values.burstTime}
             defaultValue={props?.job?.burstTime ? props?.job?.burstTime : 0}
-            onChange={handleChange("burstTime")}
+            name="burstTime"
+            onChange={handleChange}
             placeholder="Burst Time"
           />
         </Form.Group>
@@ -56,7 +68,8 @@ const JobInputComponent = (props) => {
             type="number"
             value={values.priority}
             defaultValue={props?.job?.priority ? props?.job?.priority : 0}
-            onChange={handleChange("priority")}
+            name="priority"
+            onChange={handleChange}
             placeholder="Priority"
           />
         </Form.Group>
@@ -65,4 +78,4 @@ const JobInputComponent = (props) => {
   );
 };
 
-export default JobInputComponent;
+export default JobInput;
