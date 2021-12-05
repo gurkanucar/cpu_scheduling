@@ -53,21 +53,62 @@ const JobForm = () => {
   const calculate = () => {
     const result = FCFS.calculateWaitingTime(values);
     setChartData(result);
-    console.log(result);
+    sortJobs(values.jobs);
   };
 
-  const addItem = () => {
-    const data = {
-      id: Math.random(),
-      jobName: values.jobs.length + 1,
-      arrivalTime: "",
-      burstTime: "",
-      priority: "",
-    };
+  const sortJobs = (data) => {
+    let arr = data;
+    arr = arr.sort((a, b) => (a.jobName > b.jobName ? 1 : -1));
 
     setValues({
       ...values,
-      jobs: [...values.jobs, data],
+      jobs: arr,
+    });
+    console.log("after calculate", values.jobs);
+  };
+
+  const addItem = () => {
+    if (values.jobs.length < 4) {
+      const data = {
+        id: Math.random(),
+        jobName: values.jobs.length + 1,
+        arrivalTime: "",
+        burstTime: "",
+        priority: "",
+      };
+
+      setValues({
+        ...values,
+        jobs: [...values.jobs, data],
+      });
+    }
+  };
+
+  useEffect(() => {
+    console.log("after update", values.jobs);
+  }, [values.jobs]);
+
+  const updateItem = (item) => {
+    let data = values.jobs;
+
+    const arr = data.map((x) => {
+      if (item.id == x.id) {
+        const tmp = {
+          ...x,
+          arrivalTime: Number(item.arrivalTime),
+          burstTime: Number(item.burstTime),
+          priority: Number(item.priority),
+        };
+        return tmp;
+      }
+      return x;
+    });
+
+    // console.log("JOBS DEGISTI", arr);
+
+    setValues({
+      ...values,
+      jobs: arr,
     });
   };
 
@@ -76,24 +117,24 @@ const JobForm = () => {
       return job.id !== id;
     });
 
-    newArray.forEach((job, index) => {
+    const arr = newArray.map((job, index) => {
       const data = {
-        jobName: index + 1,
         ...job,
+        jobName: index + 1,
       };
       return data;
     });
 
-    console.log(newArray);
+    console.log(arr);
 
     setValues({
       ...values,
-      jobs: newArray,
+      jobs: arr,
     });
   };
 
   useEffect(() => {
-    console.log(chartData.waitingTimes);
+    // console.log(chartData.waitingTimes);
   }, [chartData]);
 
   return (
@@ -136,7 +177,14 @@ const JobForm = () => {
           <tbody>
             {values.jobs?.map((x) => {
               return (
-                <JobInput key={x.id} job={x} onClick={() => deleteItem(x.id)} />
+                <JobInput
+                  inputChangeHandler={(data) => {
+                    return updateItem(data);
+                  }}
+                  key={x.id}
+                  job={x}
+                  onClick={() => deleteItem(x.id)}
+                />
               );
             })}
           </tbody>
