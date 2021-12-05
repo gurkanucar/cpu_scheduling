@@ -1,8 +1,8 @@
 .root {
 
-    padding-left: 20%;
-    padding-right: 20%;
-    padding-top: 10%;
+    padding-left: 10%;
+    padding-right: 10%;
+    padding-top: 5%;
 
 }
 
@@ -20,6 +20,10 @@
 .form-input-quantum-time {
     padding-right: 80%;
     margin-bottom: 15px;
+}
+
+.table-tr {
+    text-align: center;
 }
 
 

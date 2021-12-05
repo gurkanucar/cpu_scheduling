@@ -15,7 +15,7 @@ const JobInput = (props) => {
   };
 
   useEffect(() => {
-    console.log("update job input component", values);
+    //console.log("update job input component", values);
   }, [values]);
 
   const handleChange = (event) => {

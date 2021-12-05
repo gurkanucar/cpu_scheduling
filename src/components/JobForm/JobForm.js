@@ -1,37 +1,60 @@
 import React, { useState, useEffect } from "react";
 import { Col, Form, Row, Table } from "react-bootstrap";
 import Button from "react-bootstrap/Button";
+import FCFS from "../../utils/FCFS";
+import { GantChart } from "../GantChart/GantChart";
 import JobInput from "../JobInput/JobInput";
 import "./JobForm.css";
 
 const JobForm = () => {
+  const [chartData, setChartData] = useState([]);
+
   const [values, setValues] = React.useState({
     jobs: [
       {
         id: Math.random(),
         jobName: 1,
-        arrivalTime: 5,
+        arrivalTime: 0,
         burstTime: 12,
         priority: 3,
       },
       {
         id: Math.random(),
         jobName: 2,
-        arrivalTime: 3,
-        burstTime: 9,
-        priority: 7,
+        arrivalTime: 5,
+        burstTime: 8,
+        priority: 2,
       },
       {
         id: Math.random(),
         jobName: 3,
-        arrivalTime: 1,
+        arrivalTime: 12,
         burstTime: 4,
-        priority: 9,
+        priority: 1,
+      },
+      {
+        id: Math.random(),
+        jobName: 4,
+        arrivalTime: 13,
+        burstTime: 8,
+        priority: 2,
+      },
+      {
+        id: Math.random(),
+        jobName: 5,
+        arrivalTime: 15,
+        burstTime: 5,
+        priority: 0,
       },
     ],
     quantumTime: 0,
-    jobCount: 1,
   });
+
+  const calculate = () => {
+    const result = FCFS.calculateWaitingTime(values);
+    setChartData(result);
+    console.log(result);
+  };
 
   const addItem = () => {
     const data = {
@@ -69,6 +92,10 @@ const JobForm = () => {
     });
   };
 
+  useEffect(() => {
+    console.log(chartData.waitingTimes);
+  }, [chartData]);
+
   return (
     <div className="root">
       <Form className="job-form">
@@ -81,7 +108,7 @@ const JobForm = () => {
             </Col>
             <Col md={4}>
               <Form.Select aria-label="Default select example">
-                <option value="1">FSFJ</option>
+                <option value="1">FCFS</option>
                 <option value="2">SFJ</option>
                 <option value="3">SFJ P</option>
                 <option value="3">Round Robin</option>
@@ -99,10 +126,10 @@ const JobForm = () => {
         </Form.Group>
         <Table striped bordered hover>
           <thead>
-            <tr>
+            <tr className="table-tr">
               <th>Job</th>
-              <th>Arrival Time</th>
-              <th>Burst Time</th>
+              <th>Arrival Time (ms)</th>
+              <th>Burst Time (ms)</th>
               <th>Priority</th>
             </tr>
           </thead>
@@ -131,9 +158,12 @@ const JobForm = () => {
           />
         </Form.Group>
         <div className="d-grid">
-          <Button variant="success">Calculate</Button>
+          <Button variant="success" onClick={calculate}>
+            Calculate
+          </Button>
         </div>
       </Form>
+      <GantChart data={chartData} />
     </div>
   );
 };
