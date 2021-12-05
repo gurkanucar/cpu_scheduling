@@ -2,12 +2,15 @@ import React, { useState, useEffect } from "react";
 import { Col, Form, Row, Table } from "react-bootstrap";
 import Button from "react-bootstrap/Button";
 import FCFS from "../../utils/FCFS";
+import SFJ_NP from "../../utils/SFJ_NP";
 import { GantChart } from "../GantChart/GantChart";
 import JobInput from "../JobInput/JobInput";
 import "./JobForm.css";
 
 const JobForm = () => {
   const [chartData, setChartData] = useState([]);
+
+  const [algorithmSelection, setAlgorithmSelection] = useState(1);
 
   const [values, setValues] = React.useState({
     jobs: [
@@ -51,8 +54,15 @@ const JobForm = () => {
   });
 
   const calculate = () => {
-    const result = FCFS.calculateWaitingTime(values);
-    setChartData(result);
+    setChartData([]);
+    console.log(algorithmSelection);
+    if (algorithmSelection === 1) {
+      console.log("fcfs");
+      setChartData(FCFS.calculateWaitingTime(values));
+    } else if (algorithmSelection === 2) {
+      console.log("sfj_np");
+      setChartData(SFJ_NP.calculateWaitingTime(values));
+    }
     sortJobs(values.jobs);
   };
 
@@ -148,7 +158,13 @@ const JobForm = () => {
               </div>
             </Col>
             <Col md={4}>
-              <Form.Select aria-label="Default select example">
+              <Form.Select
+                onChange={(e) => {
+                  console.log(e.target.value);
+                  setAlgorithmSelection(Number(e.target.value));
+                }}
+                aria-label="Default select example"
+              >
                 <option value="1">FCFS</option>
                 <option value="2">SFJ</option>
                 <option value="3">SFJ P</option>
